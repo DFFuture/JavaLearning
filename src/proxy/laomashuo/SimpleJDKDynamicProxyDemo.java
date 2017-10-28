@@ -6,8 +6,9 @@ import java.lang.reflect.Proxy;
 
 public class SimpleJDKDynamicProxyDemo {
 
-    static interface IService {
-        public void sayHello();
+    interface IService {
+        void sayHello();
+        void sayHello(String s);
     }
 
     static class RealService implements IService {
@@ -15,6 +16,11 @@ public class SimpleJDKDynamicProxyDemo {
         @Override
         public void sayHello() {
             System.out.println("hello");
+        }
+
+        @Override
+        public void sayHello(String s) {
+            System.out.println(s);
         }
     }
 
@@ -37,7 +43,8 @@ public class SimpleJDKDynamicProxyDemo {
     public static void main(String[] args) {
         IService realService = new RealService();
         IService proxyService = (IService) Proxy.newProxyInstance(IService.class.getClassLoader(),
-                new Class<?>[] {IService.class}, new SimpleInvocationHandler((realService)));
+                new Class<?>[] {IService.class}, new SimpleInvocationHandler(realService));
         proxyService.sayHello();
+        proxyService.sayHello("world");
     }
 }
